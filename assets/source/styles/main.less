@@ -1,0 +1,53 @@
+@import (less)"../components/sweetalert/lib/sweet-alert.css";
+@import (less)"../components/ladda/dist/ladda.min.css";
+@import (less)"../components/jquery-ui/themes/smoothness/jquery-ui.css";
+@import "elements";
+@import "group";
+@import "Property/image";
+@import "Property/slider";
+
+body {
+
+}
+
+.super-ui {
+	color: #afafaf;
+	.transition();
+
+	&:hover {
+		color: #444;
+	}
+}
+
+.button-remove {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	text-align: center;
+	line-height: 20px;
+
+	&:after {
+		font-size: 16px;
+		content: "\f158";
+		font-family: "Dashicons";
+	}
+}
+.super-input {
+	width: 25em;
+	border: 1px solid #ddd;
+	.rounded(2px);
+}
+textarea.super-input {
+	height: 10em;
+	max-width: 100%;
+}
+.super-property-label {
+	display: block;
+	padding: 10px 0px !important;
+	line-height: 1.4em;
+	font-size: 13px !important;
+	font-weight: normal;
+}

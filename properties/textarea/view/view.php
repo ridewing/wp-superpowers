@@ -1,0 +1,2 @@
+<label for="<?php echo $inputName ?>"><?php echo $label ?></label>
+<textarea class="super-input superpower-property-value" id="<?php echo $inputName ?>" data-id="<?php echo $id ?>" data-name="<?php echo $inputNameModel ?>" name="<?php echo $inputName ?>" placeholder="<?php echo $placeholder ?>"><?php echo $value ?></textarea>
