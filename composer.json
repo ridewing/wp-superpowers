@@ -1,0 +1,26 @@
+{
+  "name": "ridewing/wp-superpowers",
+  "description": "Wordpress CMS plugin by Nicklas Ridewing",
+  "keywords": ["ridewing", "cms", "superpowers", "wordpress"],
+  "homepage": "http://ridewing.se",
+  "type": "wordpress-plugin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Nicklas Ridewing",
+      "email": "superpowers@ridewing.se",
+      "homepage": "http://ridewing.se"
+    }
+  ],
+  "require": {
+    "composer/installers": "v1.0.6"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "echo 'Hello!!'"
+    ]
+  },
+  "require-dev": {},
+  "suggest": {},
+  "minimum-stability" : "dev"
+}
