@@ -1,20 +1,17 @@
 var gulp = require('gulp');
-var ProjectHelper = require('project-helpers');
-
-ProjectHelper.setup({
-	debug : false,
-	sourcePath : 'source/',
-	componentsPath : 'source/components/',
+var ph = require('project-helpers')({
 	mainLessFile : 'main.less'
 });
 
-ProjectHelper.registerComponent('knockout');
-ProjectHelper.registerComponent('jquery');
-ProjectHelper.registerComponent('jquery-ui', 'jquery-ui.js');
-ProjectHelper.registerComponent('spin.js');
-ProjectHelper.registerComponent('ladda', 'dist/ladda.min.js');
-ProjectHelper.registerComponent('sweetalert', 'lib/sweet-alert.js');
+ph.registerComponent('knockout');
+ph.registerComponent('jquery');
+ph.registerComponent('jquery-ui', 'jquery-ui.js');
+ph.registerComponent('spin.js');
+ph.registerComponent('ladda', 'dist/ladda.min.js');
+ph.registerComponent('sweetalert', 'lib/sweet-alert.js');
+
+ph.ready();
 
 gulp.task("default", function () {
-	ProjectHelper.default();
+	ph.default();
 });
