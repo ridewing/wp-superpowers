@@ -68,6 +68,9 @@ abstract class SuperTypeController extends SuperObject {
 
 			$count = 0;
 
+			$groupDefinition = $this->definition->group($this->type, $this->subtype, $groupId);
+			$propertiesToRemove = array_flip(array_map(function($property){ return $property['id']; }, $groupDefinition['properties']));
+
 			foreach($group as $index => $properties) {
 				$allPropertiesAreEmpty = true;
 				$count++;
@@ -75,6 +78,8 @@ abstract class SuperTypeController extends SuperObject {
 				foreach($properties as $propertyId => $value){
 
 					$property = $this->load->property($this->postId, $groupId, $propertyId, $index);
+
+					unset( $propertiesToRemove[$propertyId] );
 
 					if((is_string($value) && strlen($value) > 0 && $value != '-1') || !empty($value) && $value != '-1') {
 						$property->save($value);
@@ -87,6 +92,12 @@ abstract class SuperTypeController extends SuperObject {
 				if($allPropertiesAreEmpty){
 					$count--;
 				}
+			}
+
+			// Remove properties that has not been touched
+			foreach(array_flip($propertiesToRemove) as $propertyId){
+				$property = $this->load->property($this->postId, $groupId, $propertyId, $index);
+				$property->delete();
 			}
 
 			$this->group->setGroupRepeatForPost($this->postId, $groupId, $count);

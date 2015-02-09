@@ -82,6 +82,7 @@ abstract class SuperProperty extends \SuperPowers\SuperObject {
 	 * @param mixed|null $value
 	 */
 	function save($value = null) {
+
 		if(!empty($this->postId)){
 
 			if($value === null)
