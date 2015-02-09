@@ -17,6 +17,7 @@ class SuperPowers extends SuperObject {
 	public $controller;
 	public $version = "1.0.0";
 
+
 	function __construct() {
 
 		parent::__construct();
@@ -25,8 +26,8 @@ class SuperPowers extends SuperObject {
 
 		// Setup paths
 		$this->applicationDirectory = "{$rootDirectory}/application";
-		$this->directory            = WP_PLUGIN_DIR . "/superpowers";
-		$this->url                  = plugins_url('superpowers');
+		$this->directory            = WP_PLUGIN_DIR . "/wp-superpowers";
+		$this->url                  = plugins_url('wp-superpowers');
 
 		define('SUPERPOWERS_APPLICATION_DIR', $this->applicationDirectory);
 		define('SUPERPOWERS_DIR', $this->directory);
