@@ -9,6 +9,8 @@ class SuperPowers extends SuperObject {
 
 	private $typeId = null;
 	private $subtypeId = null;
+	/** @var \SuperPowers\Route\BaseRoute */
+	private $router = null;
 
 	protected $types       = array();
 	protected $taxonomies  = array();
@@ -31,7 +33,6 @@ class SuperPowers extends SuperObject {
 
 		define('SUPERPOWERS_APPLICATION_DIR', $this->applicationDirectory);
 		define('SUPERPOWERS_DIR', $this->directory);
-
 	}
 
 	/**
@@ -44,6 +45,13 @@ class SuperPowers extends SuperObject {
 		$types = $this->config->get('types');
 
 		$this->registerPostTypes($types);
+		$this->router = $this->load->router();
+
+		if($this->router){
+			// Register application routes
+			$this->router->register();
+		}
+
 
 		if (is_admin()) {
 			add_action('admin_init', array(&$this, 'handleContext'));

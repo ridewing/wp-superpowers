@@ -44,6 +44,21 @@ class Load extends SuperObject{
 		return $this->file($name);
 	}
 
+	function router(){
+		if(!class_exists('\\SuperPowers\\Route\\ApplicationRouter')){
+			$this->file('Route', 'core');
+			$file = $this->file('ApplicationRoute', '');
+
+			if(empty($file)){
+				return false;
+			}
+
+			$route = '\\SuperPowers\\Route\\ApplicationRouter';
+
+			return new $route;
+		}
+	}
+
 	function property($postId, $groupId, $propertyId, $index = 0) {
 
 		if(!class_exists('\\SuperPowers\\Property\\SuperProperty')) {
@@ -77,7 +92,13 @@ class Load extends SuperObject{
 	function file($name, $folder = "controllers", $required = true){
 
 		$name = str_replace('.', '/', $name);
-		$file = "/{$folder}/{$name}.php";
+		if(!empty($folder)){
+			$file = "/{$folder}/{$name}.php";
+		} else {
+			$file = "/{$name}.php";
+		}
+
+
 		if($this->applicationFile($file)) {
 			if(!$this->fileIsLoaded(SUPERPOWERS_APPLICATION_DIR . "/{$folder}/{$name}.php")){
 				return $this->loadFile(SUPERPOWERS_APPLICATION_DIR . "/{$folder}/{$name}.php", "application");
