@@ -13,7 +13,11 @@
 | Register Composer Autoloader
 |--------------------------------------------------------------------------
 */
-require_once(dirname(dirname(dirname(__DIR__))).'/vendor/autoload.php');
+$autoloader = dirname(dirname(dirname(__DIR__))).'/vendor/autoload.php';
+if(file_exists($autoloader)){
+  require_once(dirname(dirname(dirname(__DIR__))).'/vendor/autoload.php');
+}
+
 
 if (defined('WP_ENV') && WP_ENV == 'development')  {
 
@@ -36,14 +40,3 @@ if(!SUPERPOWERS_AJAX){
     $superPowers->boot();
   });
 }
-
-/*add_filter('rewrite_rules_array', 'kill_feed_rewrites');
-function kill_feed_rewrites($rules){
-
-  $rules['game/([^/]+)(/news)/?$'] = 'index.php?game=$matches[1]&custom_page=news';
-  return $rules;
-}*/
-
-
-
-//do_action('SuperPowersLoaded');
