@@ -1,0 +1,40 @@
+/*---------------------------------------------------
+    LESS Elements 0.9
+  ---------------------------------------------------
+    A set of useful LESS mixins
+    More info at: http://lesselements.com
+  ---------------------------------------------------*/
+.property-slider {
+  max-width: 500px;
+  border: 1px solid #444;
+  background: white;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+}
+.property-slider .ui-slider-handle {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  border: 1px solid #444;
+  width: 16px;
+  height: 16px;
+  top: -4px;
+  margin-left: -8px;
+  outline: none;
+  background: #E6E6E6;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+.property-slider .ui-slider-range {
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+  background: #1e8cbe;
+}
+.property-slider .ui-widget-header {
+  background: #1e8cbe;
+}

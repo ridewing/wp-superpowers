@@ -13,6 +13,8 @@ class PropertyHelpers extends SuperObject {
 		if(array_key_exists('superpowers', $array)){
 			return $array['superpowers'];
 		}
+
+		return array();
 	}
 
 	function getPropertyInGroup($groupId, $propertyId, $definition) {

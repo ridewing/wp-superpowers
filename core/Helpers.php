@@ -38,9 +38,15 @@ function _limit($content, $limit = 100) {
 	return $superPowers->post->limitContent($content, $limit);
 }
 
+/**
+ * @return string
+ */
 function _apiController(){
-
 	global $superPowers;
-
 	return "{$superPowers->url}/api/controller.php";
+}
+
+function _frontendControllers(){
+	global $superPowers;
+	echo "data-controller='{$superPowers->getFrontendControllers()}'";
 }

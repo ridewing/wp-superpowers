@@ -64,6 +64,7 @@ abstract class SuperTypeController extends SuperObject {
 		// Filter out only plugin properties and values
 		$groups = $this->propertyHelpers->getOnlySuperPropertiesFromArray($args);
 
+
 		foreach($groups as $groupId => $group) {
 
 			$count = 0;

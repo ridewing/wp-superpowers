@@ -34,9 +34,10 @@ require_once "core/SuperPowers.php";
 
 $superPowers = new \SuperPowers\SuperPowers();
 
-if(!SUPERPOWERS_AJAX){
-  add_action( 'init', function() use($superPowers)
-  {
-    $superPowers->boot();
-  });
-}
+
+
+add_action( 'init', function() use($superPowers)
+{
+  $superPowers->registerRouter();
+  $superPowers->boot();
+});

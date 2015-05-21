@@ -11,6 +11,7 @@ class SuperPowers extends SuperObject {
 	private $subtypeId = null;
 	/** @var \SuperPowers\Route\BaseRoute */
 	private $router = null;
+	private $frontendControllers = array();
 
 	protected $types       = array();
 	protected $taxonomies  = array();
@@ -45,13 +46,6 @@ class SuperPowers extends SuperObject {
 		$types = $this->config->get('types');
 
 		$this->registerPostTypes($types);
-		$this->router = $this->load->router();
-
-		if($this->router){
-			// Register application routes
-			$this->router->register();
-		}
-
 
 		if (is_admin()) {
 			add_action('admin_init', array(&$this, 'handleContext'));
@@ -64,6 +58,15 @@ class SuperPowers extends SuperObject {
 			});
 		} else {
 			add_action('template_include', array(&$this, 'handleContext'));
+		}
+	}
+
+	function registerRouter(){
+		$this->router = $this->load->router();
+
+		if($this->router){
+			// Register application routes
+			$this->router->register();
 		}
 	}
 
@@ -236,15 +239,6 @@ class SuperPowers extends SuperObject {
 		if(!empty($wp_query->query_vars['subview']))
 			$subview = $wp_query->query_vars['subview'];
 
-		if(!empty($wp_query->query_vars['type'])) {
-
-			$type = $wp_query->query_vars['type'];
-
-			if(!empty($wp_query->query_vars[$type])) {
-				$postId = $wp_query->query_vars[$type];
-			}
-		}
-
 		if(empty($type)){
 
 			// Type
@@ -265,18 +259,37 @@ class SuperPowers extends SuperObject {
 			else if (!isset($_GET['post_type']))
 			{
 				global $post;
-				if($post){
+				if($post && empty($wp_query->query_vars['type'])){
 					$postId = $post->ID;
 
 					$type = get_post_type($postId);
 
 				} else {
-					$postId = null;
-					$type = 'post';
+
+					if(!empty($wp_query->query_vars['type'])) {
+
+						$type = $wp_query->query_vars['type'];
+
+						if(!empty($wp_query->query_vars[$type])) {
+							$postId = $wp_query->query_vars[$type];
+						}
+					}
+
+					if(!empty($wp_query->query_vars['name'])){
+						$type = $wp_query->query_vars['name'];
+
+						if(!empty($wp_query->query_vars[$type])) {
+							$postId = $wp_query->query_vars[$type];
+						}
+					}
+
+					if(empty($type)) {
+						$postId = null;
+						$type = 'post';
+					}
 				}
 			}
 		}
-
 
 
 		// Subtype
@@ -365,6 +378,14 @@ class SuperPowers extends SuperObject {
 				$this->taxonomies[$tax['id']]['types'][] = $id;
 			}
 		}
+	}
+
+	function registerFrontendController($controller){
+		$this->frontendControllers[] = $controller;
+	}
+
+	function getFrontendControllers(){
+		return implode(',', $this->frontendControllers);
 	}
 
 	function redirect($path){
