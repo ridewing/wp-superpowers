@@ -1,6 +1,6 @@
 <?php namespace SuperPowers\Datasource;
 
-use SuperPowers\SuperObject;
+use SuperPowers\Core\SuperObject;
 
 abstract class SuperDatasource extends SuperObject {
 

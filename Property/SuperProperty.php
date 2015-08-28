@@ -1,6 +1,8 @@
 <?php namespace SuperPowers\Property;
 
-abstract class SuperProperty extends \SuperPowers\SuperObject {
+use SuperPowers\Core\SuperObject;
+
+abstract class SuperProperty extends SuperObject {
 
 	public $id;
 	public $type;
@@ -88,7 +90,9 @@ abstract class SuperProperty extends \SuperPowers\SuperObject {
 			if($value === null)
 				$value = $this->value;
 
-			update_post_meta($this->postId, $this->getIdentifier(), $value);
+			$metaId = $this->getIdentifier();
+			$saved = update_post_meta($this->postId, $metaId, $value);
+			return $saved;
 		}
 	}
 
@@ -98,7 +102,8 @@ abstract class SuperProperty extends \SuperPowers\SuperObject {
 	 * @return string
 	 */
 	function getIdentifier() {
-		return "superpowers.{$this->groupId}.{$this->id}.{$this->index}";
+		return $this->property->getIdentifier($this->groupId, $this->id, $this->index);
+		//return "superpowers.{$this->groupId}.{$this->id}.{$this->index}";
 	}
 
 	/**

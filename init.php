@@ -13,9 +13,14 @@
 | Register Composer Autoloader
 |--------------------------------------------------------------------------
 */
-$autoloader = dirname(dirname(dirname(__DIR__))).'/vendor/autoload.php';
+$autoloader = dirname(__FILE__).'/vendor/autoload.php';
 if(file_exists($autoloader)){
-  require_once(dirname(dirname(dirname(__DIR__))).'/vendor/autoload.php');
+  require_once($autoloader);
+}
+
+$applicationAutloader = dirname(WP_CONTENT_DIR) . '/vendor/autoload.php';
+if(file_exists($applicationAutloader)) {
+  require_once($applicationAutloader);
 }
 
 
@@ -29,15 +34,18 @@ if (!defined('SUPERPOWERS_AJAX')) {
   define("SUPERPOWERS_AJAX", false);
 }
 
-require_once "core/Helpers.php";
-require_once "core/SuperPowers.php";
-
-$superPowers = new \SuperPowers\SuperPowers();
+require_once "Core/Helpers.php";
+require_once "Core/SuperPowers.php";
 
 
+$superPowers = new \SuperPowers\Core\SuperPowers();
 
-add_action( 'init', function() use($superPowers)
-{
+$superPowersCache = new \SuperPowers\Core\Cache();
+$superPowersConfig = new \SuperPowers\Core\Config();
+
+$superPowers->__reloadGlobals();
+
+add_action( 'init', function() use($superPowers) {
   $superPowers->registerRouter();
   $superPowers->boot();
 });

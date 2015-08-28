@@ -1,20 +1,26 @@
-<?php namespace SuperPowers;
+<?php namespace SuperPowers\Library;
+
+use SuperPowers\Core\SuperObject;
 
 class Definition extends SuperObject {
 
 	function type($typeId, $subtypeId = null){
 		$typeId = strtolower($typeId);
 
-		$typeDefinition = $this->config->get("types.{$typeId}");
+		/*$typeDefinition = $this->config->get("types.{$typeId}");
 
 		if(!empty($subtypeId) && array_key_exists('subtypes', $typeDefinition)) {
 			if(array_key_exists($subtypeId, $typeDefinition['subtypes'])){
 				$typeDefinition = $typeDefinition['subtypes'][$subtypeId];
 			}
+		}*/
+
+		if($subtypeId != null) {
+			$typeId .= ".{$subtypeId}";
 		}
 
 		/** @var SuperTypeController $controller */
-		$controller = $this->load->controller($typeDefinition['id']);
+		$controller = $this->load->controller($typeId);
 		return $controller->getDefinition();
 	}
 

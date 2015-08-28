@@ -1,4 +1,6 @@
-<?php namespace SuperPowers;
+<?php namespace SuperPowers\Library;
+
+use SuperPowers\Core\SuperObject;
 
 class PropertyHelpers extends SuperObject {
 

@@ -1,4 +1,6 @@
-<?php namespace SuperPowers;
+<?php namespace SuperPowers\Library;
+
+use SuperPowers\Core\SuperObject;
 
 class Html extends SuperObject {
 
@@ -16,21 +18,38 @@ class Html extends SuperObject {
 		return $ret;
 	}
 
-	function getView($name, $params = null) {
-
-		global $post;
-
+	function getCachedView($name, $postId) {
 		if($this->config->get('settings.cache')) {
-			if($content = $this->cache->getView($name, $post->ID)){
-				echo $content;
-				return;
+
+			if($content = $this->cache->getView($name, $postId)){
+				return $content;
+
+			}
+			return false;
+		}
+
+		return false;
+	}
+
+	function getView($name, $params = null) {
+		$this->viewcache->setComposerContext(null);
+
+		$composer = $this->load->composer($name, $params);
+		if($composer) {
+			$this->viewcache->setComposerContext($composer->context);
+		}
+
+		if($this->config->get('settings.cache') && $this->app->controller->cached) {
+			if($this->viewcache->exists($name)){
+				echo $this->viewcache->get($name);
+				exit();
 			}
 		}
 
 		$viewName = str_replace('.', '/',  $name);
 
 		$view = $this->load->view($viewName);
-		$composer = $this->load->composer($name);
+
 		if(empty($params))
 		{
 			$params = array();
@@ -46,15 +65,24 @@ class Html extends SuperObject {
 		$content = $this->render($view, $params);
 
 		if($this->config->get('settings.cache')) {
-			$this->cache->storeView($name, $post->ID, $content);
+			if($composer){
+				if( $composer->cached) {
+					$this->viewcache->setComposerContext($composer->context);
+					$this->viewcache->set($name,  $content);
+				}
+			}
+			else {
+				$this->viewcache->set($name,  $content);
+			}
+
 		}
 
 		return $content;
 	}
 
-	function view($name, $params = null) {
+	function view($name, $params = null, $useCache = true) {
 
-		$content = $this->getView($name, $params);
+		$content = $this->getView($name, $params, $useCache);
 
 		echo $content;
 	}

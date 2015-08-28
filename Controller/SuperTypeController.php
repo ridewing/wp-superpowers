@@ -1,6 +1,6 @@
 <?php namespace SuperPowers\Controller;
 
-use SuperPowers\SuperObject;
+use SuperPowers\Core\SuperObject;
 
 abstract class SuperTypeController extends SuperObject {
 
@@ -10,6 +10,7 @@ abstract class SuperTypeController extends SuperObject {
 	public $postId;
 	public $def;
 	public $hasPost = false;
+	public $cached = true;
 
 	abstract public function getDefinition();
 
@@ -113,15 +114,40 @@ abstract class SuperTypeController extends SuperObject {
 	}
 
 	public function render() {
+
+		$this->viewcache->load($this->postId, $this->getContext());
+
 		if(!empty($this->subview)){
 			$this->renderSubview($this->subview);
 		}
 
 		$viewName = $this->getViewName();
+
+		if($this->config->get('settings.cache') && $this->cached){
+
+			if($this->viewcache->exists($viewName)){
+				echo $this->viewcache->get($viewName);
+				exit();
+			}
+		}
+
 		$args = $this->view();
 
-		$this->html->view($viewName, $args);
+		$this->html->view($viewName, $args, $this->cached);
 		exit();
+	}
+
+	protected function getContext(){
+		$context = $this->type;
+		if(!empty($this->subtype)){
+			$context .= ".{$this->subtype}";
+		}
+
+		if(!empty($this->subview)){
+			$context .= ".{$this->subview}";
+		}
+
+		return $context;
 	}
 
 	protected function renderSubview($view) {
@@ -184,8 +210,10 @@ abstract class SuperTypeController extends SuperObject {
 			foreach($def['properties'] as $property ){
 				/** @var SuperPropertyController $property */
 				$property = $this->load->property($this->postId, $groupId, $property['id'], $index);
-				$property->loadValue();
-				$content .= $property->view();
+				if($property) {
+					$property->loadValue();
+					$content .= $property->view();
+				}
 			}
 		}
 		$content .= '</div>';

@@ -1,4 +1,6 @@
-<?php namespace SuperPowers\Property;
+<?php namespace SuperPowers\Property\Slider;
+
+use SuperPowers\Property\SuperProperty;
 
 class Slider extends SuperProperty {
 

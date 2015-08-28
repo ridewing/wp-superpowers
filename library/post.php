@@ -1,6 +1,8 @@
-<?php namespace SuperPowers;
+<?php namespace SuperPowers\Library;
 
-class Post {
+use SuperPowers\Core\SuperObject;
+
+class Post extends SuperObject {
 
 	/**
 	 * @param int|string $postId
@@ -59,16 +61,23 @@ class Post {
 		return apply_filters('the_content', $post->post_content);
 	}
 
-	function limitContent($content, $limit = 80){
+	function limitContent($content, $limit = 80, $start = 0){
 		if (strlen($content) > $limit) {
 			// Limit string length
-			$content = substr($content, 0, $limit);
+			$content = substr($content, $start, $limit);
 
 			// Split to words
 			$content = explode(' ', $content);
 
 			// Remove last word (or part of word)
 			array_pop($content);
+
+
+			if($start > 0) {
+				array_shift($content);
+				array_unshift($content, "...");
+			}
+
 
 			// Put string together again
 			$content = implode(' ', $content) . '...';
@@ -123,5 +132,14 @@ class Post {
 		}
 	}
 
+	function getLabel($postId){
+		$post = get_post($postId);
+		$type = $this->config->get("types.{$post->post_type}");
+		if(!empty($type['label_swe'])) {
+			return $type['label_swe'];
+		}
+
+		return $type['label'];
+	}
 
 }

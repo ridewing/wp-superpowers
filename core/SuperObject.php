@@ -1,21 +1,23 @@
-<?php namespace SuperPowers;
+<?php namespace SuperPowers\Core;
 
 require_once "Cache.php";
 
 /**
- * @property Api api
- * @property Composer composer
- * @property Config config
- * @property Create create
- * @property Definition definition
- * @property File file
- * @property Group group
- * @property Html html
- * @property Image image
- * @property Load load
- * @property Post post
- * @property Property property
- * @property PropertyHelpers propertyHelpers
+ * @property \SuperPowers\Library\Api api
+ * @property \SuperPowers\Library\Composer composer
+ * @property \SuperPowers\Library\Create create
+ * @property \SuperPowers\Library\Definition definition
+ * @property \SuperPowers\Library\File file
+ * @property \SuperPowers\Library\Group group
+ * @property \SuperPowers\Library\Html html
+ * @property \SuperPowers\Library\Viewcache viewcache
+ * @property \SuperPowers\Library\Image image
+ * @property \SuperPowers\Library\Load load
+ * @property \SuperPowers\Library\Post post
+ * @property \SuperPowers\Library\Property property
+ * @property \SuperPowers\Library\PropertyHelpers propertyHelpers
+ * @property \SuperPowers\Library\Session session
+ * @property \SuperPowers\Library\Request request
  */
 class SuperObject {
 
@@ -27,16 +29,22 @@ class SuperObject {
 
 	/**
 	 * Session cache storage
-	 * @var ApplicationCache
+	 * @var \SuperPowers\Core\Cache
 	 */
 	protected $cache;
+
+	/**
+	 * Application config class
+	 * @var \SuperPowers\Core\Config
+	 */
+	protected $config;
 
 	public $applicationDirectory;
 	public $directory;
 
 	function __construct()
 	{
-		$this->cache = new ApplicationCache();
+
 		if(defined('SUPERPOWERS_APPLICATION_DIR')){
 			$this->applicationDirectory = SUPERPOWERS_APPLICATION_DIR;
 		}
@@ -44,56 +52,66 @@ class SuperObject {
 			$this->directory = SUPERPOWERS_DIR;
 		}
 
-		global $superPowers;
+
+		global $superPowers, $superPowersCache, $superPowersConfig;
 
 		$this->app = $superPowers;
+		$this->cache = $superPowersCache;
+		$this->config = $superPowersConfig;
 	}
 
-	function loadClass($name, $type, $skipCache = false)
-	{
-		$lowercaseName = strtolower($name);
-		$cacheKey = $this->cache->getKey($name, $type);
+	public function __reloadGlobals(){
+		global $superPowers, $superPowersCache, $superPowersConfig;
 
-		if(!$skipCache && $this->cache->exists($cacheKey)) {
-			return $this->cache->get($cacheKey);
+		$this->app = $superPowers;
+		$this->cache = $superPowersCache;
+		$this->config = $superPowersConfig;
+	}
+
+	public function __load($name){
+
+		if($this->cache->exists($name)) {
+			return $this->cache->get("superObject.{$name}");
 		}
 
-		$lowercaseName = strtolower($name);
-		$uppercaseName = ucfirst($lowercaseName);
-		$applicationPath = "{$this->applicationDirectory}/$type/$name.php";
-		$pluginPath = "{$this->directory}/$type/$name.php";
+		$parts = explode('.', $name);
 
-		if(file_exists($applicationPath))
+		$namespace = "";
+
+		if(isset($this->config)){
+			$namespace = $this->config->get('settings.namespace');
+		}
+
+		$appClassName = "\\{$namespace}";
+		$pluginClassName = "\\SuperPowers";
+
+		foreach($parts as $part){
+			$part = ucfirst($part);
+			$appClassName .= "\\{$part}";
+			$pluginClassName .= "\\{$part}";
+		}
+
+		if(class_exists($appClassName)) {
+			$klass = new $appClassName;
+		}
+		else if(class_exists($pluginClassName))
 		{
-			$filepath = $applicationPath;
-		}
-		else if (file_exists($pluginPath))
-		{
-			$filepath = $pluginPath;
+			$klass = new $pluginClassName;
 		}
 
-		if(!empty($filepath)){
-
-			require $filepath;
-
-			$klassname = '\\SuperPowers\\' . $uppercaseName;
-			$klass = new $klassname;
-
-			$this->cache->set($cacheKey, $klass);
-
+		if(isset($klass)) {
+			$this->cache->set("superObject.{$name}", $klass);
 			return $klass;
 		}
-		else
-		{
-			echo $pluginPath;
-			die();
-			throw new \ErrorException("Can't load {$type}: {$name}");
+		else {
+			trigger_error("Error loading lib {$name}, App class: {$appClassName}, Plugin class: {$pluginClassName}"); exit;
 		}
 	}
 
 	public function __get($name)
 	{
-		return $this->loadClass($name, 'library');
+		$name = ucfirst($name);
+		return $this->__load("Library.$name");
 	}
 
 }

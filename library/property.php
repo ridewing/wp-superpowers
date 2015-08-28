@@ -1,11 +1,16 @@
-<?php namespace SuperPowers;
+<?php namespace SuperPowers\Library;
 
+use SuperPowers\Core\SuperObject;
 /**
  * Class Property
  * Class to fetch property values
  * @package SuperPowers
  */
 class Property extends SuperObject {
+
+	function getIdentifier($groupId, $propertyId, $index = 0) {
+		return "superpowers.{$groupId}.{$propertyId}.{$index}";
+	}
 
 	/**
 	 * Get value for property from current post

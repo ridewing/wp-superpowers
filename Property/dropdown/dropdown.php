@@ -1,8 +1,10 @@
-<?php namespace SuperPowers\Property;
+<?php namespace SuperPowers\Property\Dropdown;
+
+use SuperPowers\Property\SuperProperty;
 
 class Dropdown extends SuperProperty {
 
-	/** @var  \SuperPowers\SuperDatasource */
+	/** @var  \SuperPowers\Datasource\SuperDatasource */
 	protected $data;
 
 	function load($groupId, $groupIndex, $definition, $postId)

@@ -1,4 +1,7 @@
-<?php namespace SuperPowers\Property;
+<?php namespace SuperPowers\Property\Bool;
+
+use SuperPowers\Property\SuperProperty;
+
 
 class Bool extends SuperProperty {
 

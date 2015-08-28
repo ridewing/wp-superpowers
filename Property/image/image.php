@@ -1,4 +1,6 @@
-<?php namespace SuperPowers\Property;
+<?php namespace SuperPowers\Property\Image;
+
+use SuperPowers\Property\SuperProperty;
 
 class Image extends SuperProperty {
 	function getValue($args = null)
@@ -17,7 +19,7 @@ class Image extends SuperProperty {
 
 			$extension = $this->image->getExtension($source);
 
-			$path = "{$base['basedir']}/generated/{$this->postId}/{$value->id}/{$args['size']}.{$extension}";
+			$path = "{$base['basedir']}/generated/{$this->postId}/{$this->id}/{$args['size']}.{$extension}";
 
 			if(!file_exists($path)) {
 				$size = $this->definition['size'][$args['size']];
@@ -34,7 +36,7 @@ class Image extends SuperProperty {
 				$this->image->create($source, $path, $size[0], $size[1], $args['fit']);
 			}
 
-			return "{$base['baseurl']}/generated/{$this->postId}/{$value->id}/{$args['size']}.{$extension}";
+			return "{$base['baseurl']}/generated/{$this->postId}/{$this->id}/{$args['size']}.{$extension}";
 		}
 
 		return $value;

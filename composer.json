@@ -20,6 +20,11 @@
       "echo 'Hello!!'"
     ]
   },
+  "autoload" : {
+    "psr-4" : {
+      "SuperPowers\\" : ""
+    }
+  },
   "require-dev": {},
   "suggest": {},
   "minimum-stability" : "dev"

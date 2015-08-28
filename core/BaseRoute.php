@@ -1,4 +1,4 @@
-<?php namespace SuperPowers\Route;
+<?php namespace SuperPowers\Core;
 
 abstract class BaseRoute {
 

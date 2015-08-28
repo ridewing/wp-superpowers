@@ -1,4 +1,4 @@
-<?php namespace SuperPowers;
+<?php namespace SuperPowers\Core;
 
 require_once "SuperObject.php";
 
@@ -9,7 +9,7 @@ class SuperPowers extends SuperObject {
 
 	private $typeId = null;
 	private $subtypeId = null;
-	/** @var \SuperPowers\Route\BaseRoute */
+	/** @var \SuperPowers\BaseRoute */
 	private $router = null;
 	private $frontendControllers = array();
 
@@ -19,6 +19,8 @@ class SuperPowers extends SuperObject {
 	/** @var  \SuperPowers\Controller\SuperTypeController */
 	public $controller;
 	public $version = "1.0.0";
+
+	public $page = 1;
 
 
 	function __construct() {
@@ -43,12 +45,15 @@ class SuperPowers extends SuperObject {
 	 */
 	function boot() {
 
+		$this->__reloadGlobals();
+
 		$types = $this->config->get('types');
 
 		$this->registerPostTypes($types);
 
 		if (is_admin()) {
 			add_action('admin_init', array(&$this, 'handleContext'));
+			add_action('admin_menu' , array(&$this,'removePostCustomFields'));
 			add_action('admin_enqueue_scripts', array(&$this, 'assets'));
 			add_action('edit_page_form', function(){
 				echo "<input type='hidden' name='subtype' value='{$this->subtypeId}'/>";
@@ -59,6 +64,14 @@ class SuperPowers extends SuperObject {
 		} else {
 			add_action('template_include', array(&$this, 'handleContext'));
 		}
+		
+		add_action('admin_notices', function(){
+			echo "<div class='updated'><p>A message from Memcachy: Neither Memcached or Memcache where found, so no object caching loaded. <a href>Read more</a></p></div>";
+		});
+	}
+
+	function removePostCustomFields(){
+		remove_meta_box( 'postcustom' , 'post' , 'normal' );
 	}
 
 	function registerRouter(){
@@ -107,6 +120,7 @@ class SuperPowers extends SuperObject {
 	public function handleContext()
 	{
 		global $pagenow;
+		$error = false;
 
 		switch($pagenow)
 		{
@@ -123,6 +137,8 @@ class SuperPowers extends SuperObject {
 				if($this->controller) {
 					// Are we saving or editing?
 					if (isset($_POST['action']) && $_POST['action'] == 'editpost') {
+
+						$_POST['meta'] = array();
 						$this->controller->save($_POST);
 					} else {
 						$this->editView();
@@ -132,14 +148,21 @@ class SuperPowers extends SuperObject {
 
 			// Front view
 			case "index.php":
-				$this->loadController();
-				if($this->controller){
-					if($_SERVER['REQUEST_METHOD'] == 'GET'){
+				if(!is_admin()) {
+					$this->loadController();
+					if($this->controller){
+						if($_SERVER['REQUEST_METHOD'] == 'GET'){
+							$this->controller->render($_GET);
+						} else if($_SERVER['REQUEST_METHOD'] == 'POST'){
+							$this->controller->post($_POST);
+						}
+					}
+					else {
+						$this->load404Controller();
 						$this->controller->render($_GET);
-					} else if($_SERVER['REQUEST_METHOD'] == 'POST'){
-						$this->controller->post($_POST);
 					}
 				}
+
 
 				break;
 			default:
@@ -194,9 +217,6 @@ class SuperPowers extends SuperObject {
 
 		$data = $this->getCurrentPostData();
 
-		// Load super controller
-		$this->load->controllerFile('SuperTypeController');
-
 		$this->typeId = $data->type;
 		$this->subtypeId = $data->subtype;
 
@@ -222,6 +242,24 @@ class SuperPowers extends SuperObject {
 		return $data;
 	}
 
+	private function load404Controller(){
+
+		$this->typeId = "page404";
+
+
+		$this->controller = $this->load->controller($this->typeId);
+
+		if($this->controller){
+			$this->controller->load(strtolower($this->typeId), null);
+		}
+	}
+
+	public function error404(){
+		$this->load404Controller();
+		$this->controller->render($_GET);
+		exit();
+	}
+
 	/**
 	 * Get current context post data
 	 * Type, subtype and postId
@@ -235,6 +273,16 @@ class SuperPowers extends SuperObject {
 		$subview = null;
 
 		global $wp_query;
+
+		if(!empty($_GET['page'])) {
+			$this->page = $_GET['page'];
+		}
+		else if(!empty($wp_query->query_vars['page'])) {
+			$this->page = $wp_query->query_vars['page'];
+		}
+		else {
+			$this->page = 1;
+		}
 
 		if(!empty($wp_query->query_vars['subview']))
 			$subview = $wp_query->query_vars['subview'];
@@ -380,6 +428,18 @@ class SuperPowers extends SuperObject {
 		}
 	}
 
+	function url($path = ""){
+		return home_url() . "/$path";
+	}
+
+	function currentLocation(){
+		return "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+	}
+
+	function currentRequestURI(){
+		return "{$_SERVER['REQUEST_URI']}";
+	}
+
 	function registerFrontendController($controller){
 		$this->frontendControllers[] = $controller;
 	}
@@ -388,10 +448,23 @@ class SuperPowers extends SuperObject {
 		return implode(',', $this->frontendControllers);
 	}
 
+	function redirectToPost($id){
+		$this->location(get_permalink($id));
+	}
+
 	function redirect($path){
 		$url = home_url() . "/$path";
 		header("Location: {$url}");
 		exit;
+	}
+
+	function location($url){
+		header("Location: {$url}");
+		exit;
+	}
+
+	function back(){
+		$this->location($_SERVER['HTTP_REFERER']);
 	}
 }
 

@@ -1,8 +1,9 @@
-<?php namespace SuperPowers;
+<?php namespace SuperPowers\Core;
 
-class ApplicationCache {
+class Cache {
 
 	public static $cache = array();
+	private $context = "";
 
 	function exists($key) {
 		$cache = self::$cache;
@@ -29,28 +30,41 @@ class ApplicationCache {
 
 	function getView($name, $postId) {
 
-		$name = md5($name);
-		$path = SUPERPOWERS_APPLICATION_DIR . "/cache/{$postId}/{$name}.php";
+		$path = $this->getViewPath($name, $postId);
 
 		if(file_exists($path)){
-			return file_get_contents($path);
+			if(filemtime($path) < (60*60)){
+				return file_get_contents($path);
+			}
+
 		}
 
 		return false;
 	}
 
-	function storeView($name, $postId, $content) {
+	function setContext($context){
+		$this->context = $context;
+	}
 
-		$name = md5($name);
-		$path = SUPERPOWERS_APPLICATION_DIR . "/cache/{$postId}/{$name}.php";
+	function getViewPath($view, $postId) {
+
+		$view = trim($view, '/');
+		$view = str_replace('/', '.', $view);
+
+		$path = SUPERPOWERS_APPLICATION_DIR . "/cache/views/{$postId}/{$this->context}/{$view}.view";
+
+		return $path;
+	}
+
+	function storeView($name, $postId, $content) {
+		$path = $this->getViewPath($name, $postId);
 
 		$this->ensureStructure($path);
 		file_put_contents($path, $content);
 	}
 
-	function removeView($name, $postId) {
-		$name = md5($name);
-		$path = SUPERPOWERS_APPLICATION_DIR . "/cache/{$postId}/{$name}.php";
+	function removeView($name) {
+		$path = $this->getViewPath($name);
 
 		if(file_exists($path)){
 			return unlink($path);
@@ -58,10 +72,42 @@ class ApplicationCache {
 	}
 
 	function removeViewForPost($postId) {
-		$path = SUPERPOWERS_APPLICATION_DIR . "/cache/{$postId}";
+		$path = SUPERPOWERS_APPLICATION_DIR . "/cache/views/{$postId}";
 
 		if(file_exists($path)){
 			return $this->deleteDir($path);
+		}
+	}
+
+	function storePageMeta($url, $values){
+		$key = md5($url);
+		$path = SUPERPOWERS_APPLICATION_DIR . "/cache/meta/{$key}.meta";
+
+		$this->ensureStructure($path);
+		file_put_contents($path, json_encode($values));
+	}
+
+	function getPageMeta($url){
+		$key = md5($url);
+		$path = SUPERPOWERS_APPLICATION_DIR . "/cache/meta/{$key}.meta";
+
+		if(file_exists($path)){
+			if(filemtime($path) > (60*60)) {
+
+			}
+
+			return json_decode(file_get_contents($path), true);
+		}
+
+		return false;
+	}
+
+	function removePageMeta($url){
+		$key = md5($url);
+		$path = SUPERPOWERS_APPLICATION_DIR . "/cache/meta/{$key}.meta";
+
+		if(file_exists($path)){
+			return unlink($path);
 		}
 	}
 
@@ -75,21 +121,5 @@ class ApplicationCache {
 			return true;
 	}
 
-	public function deleteDir($dirPath) {
-		if (! is_dir($dirPath)) {
-			return false;
-		}
-		if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
-			$dirPath .= '/';
-		}
-		$files = glob($dirPath . '*', GLOB_MARK);
-		foreach ($files as $file) {
-			if (is_dir($file)) {
-				self::deleteDir($file);
-			} else {
-				unlink($file);
-			}
-		}
-		rmdir($dirPath);
-	}
+
 }

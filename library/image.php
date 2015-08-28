@@ -1,5 +1,6 @@
-<?php namespace SuperPowers;
+<?php namespace SuperPowers\Library;
 
+use SuperPowers\Core\SuperObject;
 use Intervention\Image\ImageManagerStatic as InterventionImage;
 
 class Image extends SuperObject {
