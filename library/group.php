@@ -30,14 +30,14 @@ class Group extends SuperObject {
 	}
 
 	function getRepeatButton($groupId){
-		return $this->html->render(SUPERPOWERS_DIR . '/views/group/repeatbutton.php', array('groupId' => $groupId));
+		return $this->html->render(SUPERPOWERS_DIR . '/View/Group/Repeatbutton.php', array('groupId' => $groupId));
 	}
 
 	function getControlls($groupId, $index) {
-		return $this->html->render(SUPERPOWERS_DIR . '/views/group/controlls.php', array('groupId' => $groupId, 'index' => $index));
+		return $this->html->render(SUPERPOWERS_DIR . '/View/Group/Controlls.php', array('groupId' => $groupId, 'index' => $index));
 	}
 
 	function getRemoveButton($groupId) {
-		return $this->html->render(SUPERPOWERS_DIR . '/views/group/remove.php', array('groupId' => $groupId));
+		return $this->html->render(SUPERPOWERS_DIR . '/View/Group/Remove.php', array('groupId' => $groupId));
 	}
 }

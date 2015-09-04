@@ -32,8 +32,11 @@ class PropertyHelpers extends SuperObject {
 
 	function getView($propertyId, $groupId, $index, $propertyDefinition, $value = null, $args = null, $viewName = 'view')
 	{
-		$applicationPropertyView = SUPERPOWERS_APPLICATION_DIR . '/properties/' . $propertyDefinition['type'] .  "/view/{$viewName}.php";
-		$pluginPropertyView = SUPERPOWERS_DIR . '/properties/' . $propertyDefinition['type'] . "/view/{$viewName}.php";
+		$viewName = ucfirst($viewName);
+		$type = ucfirst($propertyDefinition['type']);
+
+		$applicationPropertyView = SUPERPOWERS_APPLICATION_DIR . '/Property/' .$type .  "/View/{$viewName}.php";
+		$pluginPropertyView = SUPERPOWERS_DIR . '/Property/' . $type . "/View/{$viewName}.php";
 
 		$view = null;
 

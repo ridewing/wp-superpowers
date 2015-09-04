@@ -70,7 +70,7 @@ class SuperObject {
 
 	public function __load($name){
 
-		if($this->cache->exists($name)) {
+		if($this->cache->exists("superObject.{$name}")) {
 			return $this->cache->get("superObject.{$name}");
 		}
 

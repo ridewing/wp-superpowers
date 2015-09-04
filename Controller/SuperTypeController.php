@@ -50,6 +50,15 @@ abstract class SuperTypeController extends SuperObject {
 	function setPost($postId) {
 		$this->postId = $postId;
 		$this->hasPost = true;
+
+		$pageTitle = get_bloginfo('name');
+
+		if(!is_front_page()) {
+			$post = get_post($this->postId);
+			$pageTitle = "{$post->post_title} | {$pageTitle}";
+		}
+
+		$this->app->setTitle($pageTitle);
 	}
 
 	function setSubview($subview) {

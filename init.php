@@ -13,6 +13,8 @@
 | Register Composer Autoloader
 |--------------------------------------------------------------------------
 */
+
+$template = get_template_directory_uri();
 $autoloader = dirname(__FILE__).'/vendor/autoload.php';
 if(file_exists($autoloader)){
   require_once($autoloader);

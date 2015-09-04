@@ -7,8 +7,8 @@ abstract class SuperProperty extends SuperObject {
 	public $id;
 	public $type;
 
+	public $value;
 	protected $postId;
-	protected $value;
 	protected $definition;
 	protected $index;
 	protected $groupId;

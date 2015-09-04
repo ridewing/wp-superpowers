@@ -19,6 +19,7 @@ class Load extends SuperObject {
 
 	function module($name) {
 
+
 		$namespace = $this->appNamespace();
 		$appClassName = "\\{$namespace}";
 		$pluginClassName = "\\SuperPowers";

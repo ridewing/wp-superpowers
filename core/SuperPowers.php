@@ -6,6 +6,7 @@ class SuperPowers extends SuperObject {
 
 	public $applicationDirectory;
 	public $url;
+	public $title;
 
 	private $typeId = null;
 	private $subtypeId = null;
@@ -66,7 +67,7 @@ class SuperPowers extends SuperObject {
 		}
 		
 		add_action('admin_notices', function(){
-			echo "<div class='updated'><p>A message from Memcachy: Neither Memcached or Memcache where found, so no object caching loaded. <a href>Read more</a></p></div>";
+			echo "<div class='updated'><p>Running wp-superpowers version {$this->version}</p></div>";
 		});
 	}
 
@@ -134,6 +135,7 @@ class SuperPowers extends SuperObject {
 			case "post-new.php":
 				$this->loadController();
 
+
 				if($this->controller) {
 					// Are we saving or editing?
 					if (isset($_POST['action']) && $_POST['action'] == 'editpost') {
@@ -172,7 +174,6 @@ class SuperPowers extends SuperObject {
 
 	protected function editView()
 	{
-
 		if(empty($this->subtypeId) && $this->definition->typeHasSubtype($this->typeId)){
 			// Render template page here
 			$this->prepareCustomPreEditView();
@@ -189,7 +190,7 @@ class SuperPowers extends SuperObject {
 
 	protected function prepareCustomPreEditView()
 	{
-		$supportToRemove = array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'trackbacks', 'custom-fields', 'comments', 'revisions', 'page-attributes');
+		$supportToRemove = array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'trackbacks', 'custom-fields', 'page-attributes');
 		foreach ($supportToRemove as $support)
 		{
 			\remove_post_type_support($this->typeId, $support);
@@ -202,7 +203,7 @@ class SuperPowers extends SuperObject {
 
 		$def = $this->config->get("types.{$post->post_type}");
 
-		$this->html->view('subtype.choose', array(
+		$this->html->view('Subtype.Choose', array(
 			'subtypes' =>  $def['subtypes'],
 			'type' => ucfirst($post->post_type)
 		));
@@ -397,14 +398,15 @@ class SuperPowers extends SuperObject {
 			'labels' => $labels,
 			'hierarchical' => false,
 			'rewrite' => array('slug' => strtolower($args['label']), 'with_front' => false),
+			'supports' => array('title','editor','thumbnail', 'author', 'comments')
 		);
 
 		// Fill with default args
-		$args = wp_parse_args($args,$defaults);
+		$args = wp_parse_args($args, $defaults);
 
 
 		// Register post type
-		if(!in_array($id, array('page', 'post', 'attachment'))){
+		if(!in_array($id, array('page', 'post', 'revision', 'nav_menu_item', 'action', 'author', 'attachment'))){
 			$type = register_post_type($id, $args);
 		}
 
@@ -426,6 +428,10 @@ class SuperPowers extends SuperObject {
 				$this->taxonomies[$tax['id']]['types'][] = $id;
 			}
 		}
+	}
+
+	function setTitle($title){
+		$this->title = $title;
 	}
 
 	function url($path = ""){

@@ -5,7 +5,7 @@ use SuperPowers\Property\SuperProperty;
 class Image extends SuperProperty {
 	function getValue($args = null)
 	{
-		$default = array('size' => 'default', 'fit' => true, 'constrain' => false);
+		$default = array('size' => 'default', 'fit' => true, 'constrain' => false, 'raw' => false, 'color' => false);
 		$args = wp_parse_args($args, $default);
 
 		$value = parent::getValue($args);
@@ -15,6 +15,14 @@ class Image extends SuperProperty {
 
 			$source = get_attached_file($value->id);
 
+			if($args['raw']) {
+				return wp_get_attachment_url($value->id);
+			}
+
+			if($args['color']) {
+				return $this->image->getColor($source);
+			}
+
 			$base = wp_upload_dir();
 
 			$extension = $this->image->getExtension($source);
@@ -22,7 +30,13 @@ class Image extends SuperProperty {
 			$path = "{$base['basedir']}/generated/{$this->postId}/{$this->id}/{$args['size']}.{$extension}";
 
 			if(!file_exists($path)) {
-				$size = $this->definition['size'][$args['size']];
+				if(array_key_exists($args['size'], $this->definition['size'])){
+					$size = $this->definition['size'][$args['size']];
+				}
+				else {
+					$size = $args['size'];
+				}
+
 				$size = explode('x', $size);
 
 				if($args['constrain']) {

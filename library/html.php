@@ -82,6 +82,12 @@ class Html extends SuperObject {
 
 	function view($name, $params = null, $useCache = true) {
 
+		$parts = array_map(function($part) {
+			return ucfirst($part);
+		}, explode('.', $name));
+
+		$name = implode('.', $parts);
+
 		$content = $this->getView($name, $params, $useCache);
 
 		echo $content;

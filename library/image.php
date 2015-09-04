@@ -2,6 +2,7 @@
 
 use SuperPowers\Core\SuperObject;
 use Intervention\Image\ImageManagerStatic as InterventionImage;
+use ColorThief\ColorThief;
 
 class Image extends SuperObject {
 
@@ -26,6 +27,10 @@ class Image extends SuperObject {
 		}
 	}
 
+	function getColor($path) {
+		return ColorThief::getColor($path);
+	}
+
 	function create($source, $dest, $width, $height, $fit = true) {
 
 		$img = InterventionImage::make($source);
@@ -48,6 +53,6 @@ class Image extends SuperObject {
 		$base = wp_upload_dir();
 
 		$path = "{$base['basedir']}/generated/{$postId}";
-		$this->cache->deleteDir($path);
+		$this->file->deleteDir($path);
 	}
 }
