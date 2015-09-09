@@ -5,7 +5,7 @@ require "base.php";
 if(!empty($_GET['controller']) && !empty($_GET['method'])){
 
 
-	$superPowers->load->controllerFile('SuperTypeController');
+	/*$superPowers->load->controllerFile('SuperTypeController');*/
 	/** @var \SuperPowers\Controller\SuperTypeController $controller */
 	$controller = $superPowers->load->controller($_GET['controller']);
 	$controller->load($_GET['controller'], null);
@@ -20,4 +20,8 @@ if(!empty($_GET['controller']) && !empty($_GET['method'])){
 
 	response($resp);
 }
+else {
+	response(array('success' => false));
+}
+
 
