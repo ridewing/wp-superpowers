@@ -44,7 +44,7 @@ class Image extends SuperObject {
 		}
 
 		$this->file->ensureStructure($dest);
-		$img->save($dest);
+		$img->save($dest, 100);
 
 		return $dest;
 	}
