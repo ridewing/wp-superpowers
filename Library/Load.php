@@ -45,6 +45,7 @@ class Load extends SuperObject {
 	}
 
 	function controller($name) {
+		$name = ucfirst($name);
 		return $this->module("Controller.{$name}");
 	}
 
@@ -138,7 +139,7 @@ class Load extends SuperObject {
 			return SUPERPOWERS_DIR . "/{$folder}/{$name}.php";
 		}
 		else {
-			$showError = $this->config->get('settings.showError');
+			$showError = $this->config->get('settings.show_error');
 			if($showError == true){
 				throw new \ErrorException("No {$folder} named {$name} was found!");
 			}
