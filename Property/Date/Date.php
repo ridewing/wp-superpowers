@@ -1,4 +1,6 @@
-<?php namespace SuperPowers\Property;
+<?php namespace SuperPowers\Property\Date;
+
+use SuperPowers\Property\SuperProperty;
 
 class Date extends SuperProperty {
 

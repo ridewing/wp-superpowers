@@ -15,6 +15,10 @@ class Image extends SuperProperty {
 
 			$source = get_attached_file($value->id);
 
+			if(empty($source)){
+				return false;
+			}
+
 			if($args['raw']) {
 				return wp_get_attachment_url($value->id);
 			}
@@ -24,6 +28,7 @@ class Image extends SuperProperty {
 			}
 
 			$base = wp_upload_dir();
+
 
 			$extension = $this->image->getExtension($source);
 

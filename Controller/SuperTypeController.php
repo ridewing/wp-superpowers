@@ -179,6 +179,10 @@ abstract class SuperTypeController extends SuperObject {
 
 	public function buildGroups() {
 
+		if(empty($this->def['groups'])) {
+			return;
+		}
+
 		foreach($this->def['groups'] as $groupId => $group) {
 			add_meta_box($groupId, $group['name'], array(&$this, 'renderGroup'), $this->type, 'normal', 'default', $group);
 		}

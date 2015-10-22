@@ -43,13 +43,17 @@ class Post extends SuperObject {
 	 * @param null|int $limit
 	 * @return array|mixed|string|void
 	 */
-	function content($postId, $limit = null){
+	function content($postId, $limit = null, $modifier = null){
 
 		$post = get_post($postId);
 
 		if($limit){
 
 			$content = $this->limitContent($post->post_content, $limit);
+
+			if($modifier != null) {
+				$content = call_user_func($modifier,  $content);
+			}
 
 			// Wordpress content stuff
 			$content = preg_replace('/\[.+\]/','', $content);
@@ -58,7 +62,13 @@ class Post extends SuperObject {
 			return $content;
 		}
 
-		return apply_filters('the_content', $post->post_content);
+		$content = $post->post_content;
+
+		if($modifier != null) {
+			$content = call_user_func($modifier,  $content);
+		}
+
+		return apply_filters('the_content', $content);
 	}
 
 	function limitContent($content, $limit = 80, $start = 0){

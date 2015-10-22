@@ -14,6 +14,8 @@ class SuperPowers extends SuperObject {
 	private $router = null;
 	private $frontendControllers = array();
 
+	private $errorMsg = "";
+
 	protected $types       = array();
 	protected $taxonomies  = array();
 
@@ -68,6 +70,9 @@ class SuperPowers extends SuperObject {
 		
 		add_action('admin_notices', function(){
 			echo "<div class='updated'><p>Running wp-superpowers version {$this->version}</p></div>";
+			if(!empty($this->errorMsg)) {
+				echo "<div class='error'><p><b>Error</b>: {$this->errorMsg}</p></div>";
+			}
 		});
 	}
 
@@ -135,7 +140,6 @@ class SuperPowers extends SuperObject {
 			case "post-new.php":
 				$this->loadController();
 
-
 				if($this->controller) {
 					// Are we saving or editing?
 					if (isset($_POST['action']) && $_POST['action'] == 'editpost') {
@@ -145,6 +149,13 @@ class SuperPowers extends SuperObject {
 					} else {
 						$this->editView();
 					}
+				}
+				else {
+					$this->errorMsg = "Can't find controller for type: '{$this->typeId}";
+					if(!empty($this->subtypeId)) {
+						$this->errorMsg .= "/{$this->subtypeId}";
+					}
+					$this->errorMsg .= "'";
 				}
 				break;
 
@@ -291,7 +302,12 @@ class SuperPowers extends SuperObject {
 		if(empty($type)){
 
 			// Type
-			if (isset($_GET['post']))
+			if (isset($_GET['p']))
+			{
+				$type = get_post_type($_GET['p']);
+				$postId = intval($_GET['p']);
+			}
+			else if (isset($_GET['post']))
 			{
 				$type = get_post_type($_GET['post']);
 				$postId = intval($_GET['post']);
@@ -320,11 +336,23 @@ class SuperPowers extends SuperObject {
 						$type = $wp_query->query_vars['type'];
 
 						if(!empty($wp_query->query_vars[$type])) {
-							$postId = $wp_query->query_vars[$type];
+							if($type == 'user') {
+								$postId = $wp_query->query_vars[$type];
+							}
+							else if(!is_numeric($wp_query->query_vars[$type])) {
+								$post = get_page_by_path( $wp_query->query_vars[$type], OBJECT, $type );
+								if(!empty($post)) {
+									$postId = $post->ID;
+								}
+							}
+							else {
+								$postId = $wp_query->query_vars[$type];
+							}
+
+
 						}
 					}
-
-					if(!empty($wp_query->query_vars['name'])){
+					else if(!empty($wp_query->query_vars['name'])){
 						$type = $wp_query->query_vars['name'];
 
 						if(!empty($wp_query->query_vars[$type])) {
@@ -458,6 +486,10 @@ class SuperPowers extends SuperObject {
 		$this->location(get_permalink($id));
 	}
 
+	function reload(){
+		$this->location($this->currentLocation());
+	}
+
 	function redirect($path){
 		$url = home_url() . "/$path";
 		header("Location: {$url}");
@@ -469,8 +501,19 @@ class SuperPowers extends SuperObject {
 		exit;
 	}
 
+	function previousLocation(){
+		if(!empty($_SERVER['HTTP_REFERER']))
+		{
+			return $_SERVER['HTTP_REFERER'];
+		}
+		else
+		{
+			return "";
+		}
+	}
+
 	function back(){
-		$this->location($_SERVER['HTTP_REFERER']);
+		$this->location($this->previousLocation());
 	}
 }
 

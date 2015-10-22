@@ -38,6 +38,19 @@ function _limit($content, $limit = 100) {
 	return $superPowers->post->limitContent($content, $limit);
 }
 
+function _url($path = "") {
+	global $superPowers;
+	echo $superPowers->url($path);
+}
+
+function _asset($file = "") {
+	echo get_template_directory_uri() . $file;
+}
+
+function _s($string) {
+	echo $string;
+}
+
 /**
  * @return string
  */

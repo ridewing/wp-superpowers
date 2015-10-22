@@ -46,6 +46,15 @@ class Property extends SuperObject {
 		return $property->getValue($args);
 	}
 
+	function setValue($postId, $groupId, $propertyId, $value, $index = 0) {
+		/** @var \SuperPowers\Property\SuperProperty $property */
+		$property = $this->load->property($postId, $groupId, $propertyId, $index);
+
+		if(!$property) return null;
+
+		$property->save($value);
+	}
+
 	/**
 	 * Get value from all properties in group
 	 *

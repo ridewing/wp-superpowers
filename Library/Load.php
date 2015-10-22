@@ -32,7 +32,7 @@ class Load extends SuperObject {
 			$pluginClassName .= "\\{$part}";
 		}
 
-		if(class_exists($appClassName)){
+			if(class_exists($appClassName)){
 			$klass = new $appClassName;
 			return $klass;
 		}
@@ -47,6 +47,17 @@ class Load extends SuperObject {
 	function controller($name) {
 		$name = ucfirst($name);
 		return $this->module("Controller.{$name}");
+	}
+
+	function model($name, \WP_Post $post) {
+		$name = ucfirst($name);
+		/** @var \SuperPowers\Model\SuperModel $model */
+		$model = $this->module("Model.{$name}");
+		if($model) {
+			$model->setObject($post);
+		}
+
+		return $model;
 	}
 
 	function router() {
