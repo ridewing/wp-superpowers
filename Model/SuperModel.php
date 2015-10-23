@@ -6,10 +6,18 @@ abstract class SuperModel extends \SuperPowers\Core\SuperObject {
 	protected $object = null;
 	private $_cache = [];
 
+	/**
+	 * @param $object
+	 */
 	function setObject($object) {
 		$this->object = $object;
 	}
 
+	/**
+	 * @param $name
+	 *
+	 * @return mixed
+	 */
 	function __get($name)
 	{
 		$method = ucfirst($name);
@@ -24,7 +32,6 @@ abstract class SuperModel extends \SuperPowers\Core\SuperObject {
 			$this->_cache[$name] = $value;
 
 			return $value;
-
 		}
 
 		if(property_exists($this->object, $name)) {
