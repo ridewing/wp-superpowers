@@ -1,9 +1,9 @@
 <?php namespace SuperPowers\Model;
 
-class SuperModel extends \SuperPowers\Core\SuperObject {
+abstract class SuperModel extends \SuperPowers\Core\SuperObject {
 
 	/** @var \WP_Post  */
-	private $object = null;
+	protected $object = null;
 	private $_cache = [];
 
 	function setObject($object) {
