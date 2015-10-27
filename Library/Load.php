@@ -1,6 +1,7 @@
 <?php namespace SuperPowers\Library;
 
 use SuperPowers\Core\SuperObject;
+use SuperPowers\Core\SuperPowers;
 
 class Load extends SuperObject {
 

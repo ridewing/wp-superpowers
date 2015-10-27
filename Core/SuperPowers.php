@@ -22,7 +22,7 @@ class SuperPowers extends SuperObject {
 	/** @var string */
 	private $subtypeId = null;
 
-	/** @var \SuperPowers\Core\BaseRoute */
+	/** @var \SuperPowers\Core\SuperRoute */
 	private $router = null;
 
 	/** @var array  */
@@ -477,50 +477,78 @@ class SuperPowers extends SuperObject {
 		}
 	}
 
+	/**
+	 * @param $title
+	 */
 	function setTitle($title){
 		$this->title = $title;
 		$this->controller->title = $title;
 	}
 
+	/**
+	 * @param string $path
+	 *
+	 * @return string
+	 */
 	function url($path = ""){
 		return home_url() . "/$path";
 	}
 
+	/**
+	 * @return string
+	 */
 	function currentLocation(){
 		return "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 	}
 
+	/**
+	 * @return string
+	 */
 	function currentRequestURI(){
 		return "{$_SERVER['REQUEST_URI']}";
 	}
 
+	/**
+	 * @param $controller
+	 */
 	function registerFrontendController($controller){
 		$this->frontendControllers[] = $controller;
 	}
 
+	/**
+	 * @return string
+	 */
 	function getFrontendControllers(){
 		return implode(',', $this->frontendControllers);
 	}
 
+	/**
+	 * @param $id
+	 */
 	function redirectToPost($id){
 		$this->location(get_permalink($id));
 	}
 
-	function reload(){
-		$this->location($this->currentLocation());
-	}
-
+	/**
+	 * @param $path
+	 */
 	function redirect($path){
 		$url = home_url() . "/$path";
 		header("Location: {$url}");
 		exit;
 	}
 
+	/**
+	 * @param $url
+	 */
 	function location($url){
 		header("Location: {$url}");
 		exit;
 	}
 
+	/**
+	 * @return string
+	 */
 	function previousLocation(){
 		if(!empty($_SERVER['HTTP_REFERER']))
 		{
@@ -530,6 +558,10 @@ class SuperPowers extends SuperObject {
 		{
 			return "";
 		}
+	}
+
+	function reload(){
+		$this->location($this->currentLocation());
 	}
 
 	function back(){
