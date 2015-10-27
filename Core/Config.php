@@ -5,7 +5,7 @@ class Config extends SuperObject {
 
 	private $storage = [];
 
-	function get($key)
+	function get($key, $default = null)
 	{
 		$set = $this->_getFileAndKey($key);
 
@@ -32,7 +32,7 @@ class Config extends SuperObject {
 			}
 		}
 
-		return null;
+		return $default;
 	}
 
 	private function _getFileAndKey($key)
