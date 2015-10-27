@@ -51,6 +51,25 @@ function _s($string) {
 	echo $string;
 }
 
+function _a($pathOrPostId, $content, $title = '', $classes = '') {
+
+
+	if(is_int($pathOrPostId)){
+		$url = get_permalink($pathOrPostId);
+	}
+	else {
+		global $superPowers;
+		$url = $superPowers->url($pathOrPostId);
+	}
+
+	if(empty($title)) {
+		$title = $content;
+	}
+
+
+	echo "<a href='{$url}' class='{$classes}' title='{$title}'>{$content}</a>";
+}
+
 /**
  * @return string
  */
