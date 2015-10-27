@@ -4,27 +4,44 @@ require_once "SuperObject.php";
 
 class SuperPowers extends SuperObject {
 
+	/** @var string */
 	public $applicationDirectory;
+
+	/** @var string */
 	public $url;
+
+	/** @var string */
 	public $title;
 
+	/** @var int  */
+	public $page = 1;
+
+	/** @var int */
 	private $typeId = null;
+
+	/** @var string */
 	private $subtypeId = null;
-	/** @var \SuperPowers\BaseRoute */
+
+	/** @var \SuperPowers\Core\BaseRoute */
 	private $router = null;
+
+	/** @var array  */
 	private $frontendControllers = array();
 
+	/** @var string  */
 	private $errorMsg = "";
 
-	protected $types       = array();
-	protected $taxonomies  = array();
+	/** @var array  */
+	protected $types = array();
+
+	/** @var array  */
+	protected $taxonomies = array();
 
 	/** @var  \SuperPowers\Controller\SuperTypeController */
 	public $controller;
+
+	/** @var string  */
 	public $version = "1.0.0";
-
-	public $page = 1;
-
 
 	function __construct() {
 
@@ -241,6 +258,8 @@ class SuperPowers extends SuperObject {
 		$this->controller = $this->load->controller($typeClassName);
 
 		if($this->controller){
+			$this->controller->page = $this->page;
+			$this->controller->title = $this->title;
 			$this->controller->load(strtolower($data->type), $data->subtype);
 			if(!empty($data->postId)){
 				$this->controller->setPost($data->postId);
@@ -460,6 +479,7 @@ class SuperPowers extends SuperObject {
 
 	function setTitle($title){
 		$this->title = $title;
+		$this->controller->title = $title;
 	}
 
 	function url($path = ""){
