@@ -4,13 +4,32 @@ use SuperPowers\Core\SuperObject;
 
 abstract class SuperTypeController extends SuperObject {
 
+	/** @var string */
 	public $type;
+
+	/** @var string */
 	public $subtype;
+
+	/** @var string */
 	public $subview;
+
+	/** @var int  */
 	public $postId;
+
+	/** @var array */
 	public $def;
+
+	/** @var bool */
 	public $hasPost = false;
+
+	/** @var bool */
 	public $cached = true;
+
+	/** @var string */
+	public $title;
+
+	/** @var int  */
+	public $page = 1;
 
 	abstract public function getDefinition();
 
