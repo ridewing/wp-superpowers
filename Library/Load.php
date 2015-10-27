@@ -49,12 +49,13 @@ class Load extends SuperObject {
 		return $this->module("Controller.{$name}");
 	}
 
-	function model($name, \WP_Post $post) {
+	function model($name, $object) {
 		$name = ucfirst($name);
+
 		/** @var \SuperPowers\Model\SuperModel $model */
 		$model = $this->module("Model.{$name}");
 		if($model) {
-			$model->setObject($post);
+			$model->setObject($object);
 		}
 
 		return $model;
@@ -63,9 +64,9 @@ class Load extends SuperObject {
 	function router() {
 		$nameSpace = $this->appNamespace();
 
-		if(class_exists("\\$nameSpace\\ApplicationRouter")){
+		if(class_exists("\\$nameSpace\\Router")){
 
-			$route = "\\$nameSpace\\ApplicationRouter";
+			$route = "\\$nameSpace\\Router";
 
 			return new $route;
 		}
