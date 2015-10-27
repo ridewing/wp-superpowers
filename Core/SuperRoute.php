@@ -1,6 +1,6 @@
 <?php namespace SuperPowers\Core;
 
-abstract class BaseRoute {
+abstract class SuperRoute {
 
 	static $routes = array();
 
