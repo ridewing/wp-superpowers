@@ -17,7 +17,9 @@ require_once "Cache.php";
  * @property \SuperPowers\Library\Property property
  * @property \SuperPowers\Library\PropertyHelpers propertyHelpers
  * @property \SuperPowers\Library\Session session
+ * @property \SuperPowers\Library\Repository repository
  * @property \SuperPowers\Library\Request request
+ * @property \SuperPowers\Library\String string
  */
 class SuperObject {
 
