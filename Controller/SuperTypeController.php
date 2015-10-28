@@ -33,6 +33,15 @@ abstract class SuperTypeController extends SuperObject {
 
 	abstract public function getDefinition();
 
+	/**
+	 * @param string $salt
+	 *
+	 * @return string
+	 */
+	function guid($salt = ""){
+		return md5("{$this->type}:{$this->subtype}:{$this->postId}:{$this->getViewName()}:{$salt}:{$this->page}");
+	}
+
 	function load($type, $subtype) {
 		$this->type = $type;
 		$this->subtype = $subtype;
@@ -133,17 +142,18 @@ abstract class SuperTypeController extends SuperObject {
 			$this->group->setGroupRepeatForPost($this->postId, $groupId, $count);
 		}
 
-		$this->cache->removeViewForPost($this->postId);
+		$this->cache->removeViewForPost($this->guid());
 		$this->image->clearImagesForPost($this->postId);
 	}
 
+	/**
+	 * @param $args
+	 */
 	public function post($args){
 
 	}
 
 	public function render() {
-
-		$this->viewcache->load($this->postId, $this->getContext());
 
 		if(!empty($this->subview)){
 			$this->renderSubview($this->subview);
@@ -152,16 +162,21 @@ abstract class SuperTypeController extends SuperObject {
 		$viewName = $this->getViewName();
 
 		if($this->config->get('settings.cache') && $this->cached){
-
-			if($this->viewcache->exists($viewName)){
-				echo $this->viewcache->get($viewName);
+			if($this->viewcache->exists( $this->guid() )){
+				_s($this->viewcache->get( $this->guid() ));
 				exit();
 			}
 		}
 
 		$args = $this->view();
 
-		$this->html->view($viewName, $args, $this->cached);
+		$content = $this->html->getView($viewName, $args);
+
+		if($this->config->get('settings.cache') && $this->cached){
+			$this->viewcache->set($this->guid(), $content);
+		}
+
+		_s($content);
 		exit();
 	}
 

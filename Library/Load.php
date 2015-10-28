@@ -50,6 +50,12 @@ class Load extends SuperObject {
 		return $this->module("Controller.{$name}");
 	}
 
+	/**
+	 * @param $name
+	 * @param $object
+	 *
+	 * @return \SuperPowers\Model\SuperModel
+	 */
 	function model($name, $object) {
 		$name = ucfirst($name);
 

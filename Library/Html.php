@@ -32,19 +32,6 @@ class Html extends SuperObject {
 	}
 
 	function getView($name, $params = null) {
-		$this->viewcache->setComposerContext(null);
-
-		$composer = $this->load->composer($name, $params);
-		if($composer) {
-			$this->viewcache->setComposerContext($composer->context);
-		}
-
-		if($this->config->get('settings.cache') && $this->app->controller->cached) {
-			if($this->viewcache->exists($name)){
-				echo $this->viewcache->get($name);
-				exit();
-			}
-		}
 
 		$viewName = str_replace('.', '/',  $name);
 
@@ -55,6 +42,9 @@ class Html extends SuperObject {
 			$params = array();
 		}
 
+		/** @var \SuperPowers\Composer\SuperComposer $composer */
+		$composer = $this->load->composer($name, $params);
+
 		if($composer){
 			$params = $composer->view($params);
 		}
@@ -63,19 +53,6 @@ class Html extends SuperObject {
 		$params['app'] = $this->app;
 
 		$content = $this->render($view, $params);
-
-		if($this->config->get('settings.cache')) {
-			if($composer){
-				if( $composer->cached) {
-					$this->viewcache->setComposerContext($composer->context);
-					$this->viewcache->set($name,  $content);
-				}
-			}
-			else {
-				$this->viewcache->set($name,  $content);
-			}
-
-		}
 
 		return $content;
 	}
