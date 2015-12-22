@@ -232,7 +232,7 @@ class SuperPowers extends SuperObject {
 		$def = $this->config->get("types.{$post->post_type}");
 
 		$this->html->view('Subtype.Choose', array(
-			'subtypes' =>  $def['subtypes'],
+			'layouts' =>  $def['layout'],
 			'type' => ucfirst($post->post_type)
 		));
 	}
